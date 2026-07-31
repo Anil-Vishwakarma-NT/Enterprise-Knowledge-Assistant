@@ -1,5 +1,7 @@
 .venv/
 venv/
+credentials/
+adk_app.manager_agent
 __pycache__/
 *.pyc
 .env
