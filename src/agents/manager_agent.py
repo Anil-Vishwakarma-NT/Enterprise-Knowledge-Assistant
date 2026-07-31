@@ -1,6 +1,7 @@
 from google.adk.agents import Agent
 from google.adk.models.lite_llm import LiteLlm
-
+from src.agents.search_agent import search_agent
+from src.agents.email_agent import email_agent
 from src.config import OLLAMA_MODEL
 
 manager_agent = Agent(
@@ -24,8 +25,8 @@ Rules:
 3. Never fabricate information the sub-agents didn't return.
 4. Pass along the sub-agent's citations/results faithfully.
 """,
-    sub_agents=[],
+    sub_agents=[search_agent, email_agent],
 )
 
-# ADK CLI / `adk web` looks for a module-level `root_agent`.
+# Alias manager_agent to root_agent so ADK can discover it
 root_agent = manager_agent
