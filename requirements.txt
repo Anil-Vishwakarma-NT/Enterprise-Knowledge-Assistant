@@ -3,6 +3,7 @@ litellm>=1.65.5
 chromadb
 pypdf
 python-docx
-google-api-python-client>=2.149.0
-google-auth-httplib2>=0.2.0
-google-auth-oauthlib>=1.2.1
+google-auth
+google-auth-oauthlib
+google-auth-httplib2
+google-api-python-client
