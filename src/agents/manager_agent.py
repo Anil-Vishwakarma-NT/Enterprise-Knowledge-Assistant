@@ -1,6 +1,7 @@
 from google.adk.agents import LlmAgent
 from google.adk.models.lite_llm import LiteLlm
-
+from src.agents.search_agent import search_agent
+from src.agents.email_agent import email_agent
 from src.config import OLLAMA_MODEL
 from src.agents.calendar_agent import calendar_agent
 
@@ -34,9 +35,8 @@ Rules:
 3. Never fabricate information the sub-agents didn't return.
 4. Pass along the sub-agent's citations/results faithfully.
 """,
-    sub_agents=[calendar_agent],
+    sub_agents=[search_agent, email_agent, calendar_agent],
 )
 
- 
 # ADK CLI / `adk web` looks for a module-level `root_agent`.
 root_agent = manager_agent

@@ -1,9 +1,8 @@
-import os
 import sys
+from pathlib import Path
 
-# Make the project root importable regardless of where `adk web`/`adk run` is launched from.
-PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
-if PROJECT_ROOT not in sys.path:
-    sys.path.insert(0, PROJECT_ROOT)
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
-from src.agents.manager_agent import root_agent
+from src.agents.manager_agent import root_agent  # noqa: E402
