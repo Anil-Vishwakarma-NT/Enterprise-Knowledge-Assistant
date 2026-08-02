@@ -9,18 +9,18 @@ search_agent = Agent(
     model=LiteLlm(model=OLLAMA_MODEL),
     description=(
         "Answers employee questions by searching the enterprise document "
-        "knowledge base (policies, handbooks, manuals, guides) and returning "
-        "citation-backed answers."
+        "knowledge base (policies, handbooks, manuals, guides)."
     ),
     instruction="""
 You are the Enterprise Search Agent.
 
-- Always call the `search_documents` tool before answering a knowledge question.
-- Base your answer ONLY on the retrieved passages. If nothing relevant was
-  found, say so honestly instead of guessing.
-- Every factual claim must be followed by a citation in the form
-  (Source: <source>, page <page>).
-- Keep answers concise and business-appropriate.
+### CRITICAL RULES:
+1. Always execute the `search_documents` tool before answering any factual or policy question.
+2. ALWAYS pass a meaningful search string as the `query` parameter when calling `search_documents`. Never call the tool with empty arguments.
+3. Base your answer STRICTLY on the retrieved passages returned by `search_documents`.
+4. DO NOT include source file names, document titles, or page citations in your final answer unless explicitly asked by the user.
+5. Keep your responses direct, professional, and clear.
+6. If no relevant information is found in the tool output, state clearly: "I could not find information regarding this in the enterprise documents."
 """,
     tools=[search_documents],
 )
