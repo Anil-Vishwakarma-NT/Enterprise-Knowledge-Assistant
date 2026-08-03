@@ -5,7 +5,5 @@ adk_app.manager_agent
 __pycache__/
 *.pyc
 .env
-credentials.json
-token.json
 data/
 vectorstore/
