@@ -17,10 +17,10 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
 from email import encoders
 
-from googleapiclient.discovery import build
+# UPDATED: Import get_gmail_service directly from your new auth package
+from auth.google_auth import get_gmail_service
 
 from src.config import GMAIL_SENDER_LABEL, EMAIL_DRAFTS_PATH, BASE_DIR, DATA_DIR
-from src.integrations.google_auth import get_google_credentials
 
 
 # ---------------------------------------------------------------------------
@@ -259,18 +259,15 @@ def _build_mime_message(
     attachments: list[str] | None = None
 ) -> MIMEMultipart:
     """Constructs a standard MIME multipart message with text body and attachments."""
-    # Top-level container must be multipart/mixed
     msg = MIMEMultipart("mixed")
     msg["From"] = sender
     msg["To"] = to
     msg["Subject"] = subject
 
-    # Create the text container (multipart/alternative)
     msg_body = MIMEMultipart("alternative")
     msg_body.attach(MIMEText(body_text, "plain", "utf-8"))
     msg.attach(msg_body)
 
-    # Attach Files
     if attachments:
         for file_path in attachments:
             if not file_path or not os.path.exists(file_path):
@@ -289,7 +286,6 @@ def _build_mime_message(
             encoders.encode_base64(part)
             filename = os.path.basename(file_path)
             
-            # Explicitly state Content-Disposition with header parameters
             part.add_header(
                 "Content-Disposition", 
                 "attachment", 
@@ -316,12 +312,11 @@ def send_approved_email(draft_id: str, to: str | None = None) -> dict:
     if draft["status"] == "sent":
         return {"status": "error", "error": f"Draft {draft_id} was already sent."}
 
-    # Resolve final recipient (use override if provided, else fall back to draft recipient)
     recipient = to if to else draft["to"]
 
     try:
-        creds = get_google_credentials()
-        service = build("gmail", "v1", credentials=creds)
+        # UPDATED: Reused the cached Gmail service directly from auth.google_auth
+        service = get_gmail_service()
 
         mime_msg = _build_mime_message(
             sender=GMAIL_SENDER_LABEL,
@@ -336,7 +331,7 @@ def send_approved_email(draft_id: str, to: str | None = None) -> dict:
         sent = (
             service.users()
             .messages()
-            .send(userId=GMAIL_SENDER_LABEL, body={"raw": raw})
+            .send(userId="me", body={"raw": raw})
             .execute()
         )
         

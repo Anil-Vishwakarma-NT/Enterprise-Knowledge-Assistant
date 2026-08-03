@@ -2,10 +2,10 @@ from google.adk.agents import Agent
 from google.adk.models.lite_llm import LiteLlm
 
 from src.config import OLLAMA_MODEL
-from src.tools.search_tool import search_documents
+from src.tools.rag_tool import search_documents
 
-search_agent = Agent(
-    name="search_agent",
+rag_agent = Agent(
+    name="rag_agent",
     model=LiteLlm(model=OLLAMA_MODEL),
     description=(
         "Answers employee questions by searching the enterprise document "
