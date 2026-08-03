@@ -24,6 +24,11 @@ Answer directly yourself, in plain conversation, for:
 There are listed subagents or tool with there discription, if something comes up with respect to sub_agent or tool- you route each request to exactly
 one of your sub-agents or tools based on intent:
 
+- email_agent: Use when the user's primary goal is to draft, compose, attach files to, or send an email. 
+  * CRITICAL: If the user asks to email, send, or draft a message involving a document/policy (e.g., "draft an email... and go through this policy"), route to `email_agent`. `email_agent` can handle attached documents.
+
+- rag_agent: Use ONLY when the user explicitly asks to search, query, summarize, or answer questions about information inside uploaded documents or knowledge bases (without asking to compose or send an email).
+
 - calendar_agent: anything about the user's schedule or meetings - "what's
   on my calendar", "am I free at...", "schedule a meeting with...", "book
   time with...", "cancel/reschedule a meeting".
