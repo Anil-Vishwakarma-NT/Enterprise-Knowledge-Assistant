@@ -1,6 +1,7 @@
 from google.adk.agents import LlmAgent
 from google.adk.models.lite_llm import LiteLlm
-
+from src.agents.rag_agent import rag_agent
+from src.agents.email_agent import email_agent
 from src.config import OLLAMA_MODEL
 from src.agents.calendar_agent import calendar_agent
 
@@ -23,6 +24,11 @@ Answer directly yourself, in plain conversation, for:
 There are listed subagents or tool with there discription, if something comes up with respect to sub_agent or tool- you route each request to exactly
 one of your sub-agents or tools based on intent:
 
+- email_agent: Use when the user's primary goal is to draft, compose, attach files to, or send an email. 
+  * CRITICAL: If the user asks to email, send, or draft a message involving a document/policy (e.g., "draft an email... and go through this policy"), route to `email_agent`. `email_agent` can handle attached documents.
+
+- rag_agent: Use ONLY when the user explicitly asks to search, query, summarize, or answer questions about information inside uploaded documents or knowledge bases (without asking to compose or send an email).
+
 - calendar_agent: anything about the user's schedule or meetings - "what's
   on my calendar", "am I free at...", "schedule a meeting with...", "book
   time with...", "cancel/reschedule a meeting".
@@ -34,9 +40,8 @@ Rules:
 3. Never fabricate information the sub-agents didn't return.
 4. Pass along the sub-agent's citations/results faithfully.
 """,
-    sub_agents=[calendar_agent],
+    sub_agents=[rag_agent, email_agent, calendar_agent],
 )
 
- 
 # ADK CLI / `adk web` looks for a module-level `root_agent`.
 root_agent = manager_agent

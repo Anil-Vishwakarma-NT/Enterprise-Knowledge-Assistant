@@ -5,3 +5,6 @@ adk_app.manager_agent
 __pycache__/
 *.pyc
 .env
+data/
+vectorstore/
+adk_app/manager_agent/.adk/

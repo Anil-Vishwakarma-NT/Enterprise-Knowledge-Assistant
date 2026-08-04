@@ -1,6 +1,8 @@
 google-adk
 litellm>=1.65.5
-
+chromadb
+pypdf
+python-docx
 google-auth
 google-auth-oauthlib
 google-auth-httplib2

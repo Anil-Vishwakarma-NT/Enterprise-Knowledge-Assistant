@@ -36,14 +36,22 @@ _calendar_service = None
 
 
 def _get_credentials() -> Credentials:
-    """Loads cached credentials, refreshes them, or runs the OAuth flow."""
+    """Loads cached credentials, refreshes them, or runs the OAuth flow.
+
+    Also detects scope drift: if the cached token doesn't actually carry
+    every scope in SCOPES (e.g. you added gmail.send after the token was
+    first issued), it forces a fresh consent flow instead of silently
+    reusing a token that will fail with a 403 at send-time.
+    """
     creds = None
 
     if TOKEN_PATH.exists():
         creds = Credentials.from_authorized_user_file(str(TOKEN_PATH), SCOPES)
+    
+    has_required_scopes = creds is not None and creds.has_scopes(SCOPES)
 
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
+    if not creds or not creds.valid or not has_required_scopes:
+        if creds and creds.expired and creds.refresh_token and has_required_scopes:
             creds.refresh(Request())
         else:
             if not CREDENTIALS_PATH.exists():
